@@ -29,7 +29,7 @@ class EquipoController extends Controller
             'modelo' => 'required|string|max:100',
             'ip_local' => 'nullable|string|max:15',
             'fecha_instalacion' => 'nullable|date',
-            'activo' => 'boolean'
+            'activo' => 'nullable'
         ]);
 
         $validated['activo'] = $request->has('activo');
@@ -45,7 +45,7 @@ class EquipoController extends Controller
         $equipo->load(['cliente', 'alertas' => function($q) {
             $q->where('resuelta', false);
         }]);
-        $lecturas = $equipo->lecturasContador()->latest()->take(30)->get();
+        $lecturas = $equipo->lecturas()->latest()->take(30)->get();
         return view('equipos.show', compact('equipo', 'lecturas'));
     }
 
@@ -63,7 +63,7 @@ class EquipoController extends Controller
             'modelo' => 'required|string|max:100',
             'ip_local' => 'nullable|string|max:15',
             'fecha_instalacion' => 'nullable|date',
-            'activo' => 'boolean'
+            'activo' => 'nullable'
         ]);
 
         $validated['activo'] = $request->has('activo');
@@ -74,7 +74,7 @@ class EquipoController extends Controller
 
     public function destroy(Equipo $equipo)
     {
-        if ($equipo->lecturasContador()->count() > 0) {
+        if ($equipo->lecturas()->count() > 0) {
             return back()->with('error', 'No se puede eliminar el equipo porque ya tiene lecturas registradas. Puede desactivarlo en su lugar.');
         }
         $equipo->delete();

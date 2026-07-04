@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cliente extends Model
 {
+    use \App\Models\Concerns\BelongsToTenant;
+
     protected $table = 'clientes';
 
     protected $fillable = [
+        'tenant_id',
         'razon_social',
         'ruc',
         'direccion',

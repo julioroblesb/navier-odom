@@ -18,6 +18,12 @@ class ClienteController extends Controller
         return view('clientes.form', ['cliente' => new Cliente()]);
     }
 
+    public function show(Cliente $cliente)
+    {
+        // Redirigir a edit ya que no hay vista show dedicada
+        return redirect()->route('clientes.edit', $cliente);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -28,7 +34,7 @@ class ClienteController extends Controller
             'contacto_nombre' => 'nullable|string|max:150',
             'contacto_telefono' => 'nullable|string|max:20',
             'contacto_email' => 'nullable|email|max:150',
-            'activo' => 'boolean'
+            'activo' => 'nullable'
         ]);
 
         $validated['activo'] = $request->has('activo');
@@ -52,7 +58,7 @@ class ClienteController extends Controller
             'contacto_nombre' => 'nullable|string|max:150',
             'contacto_telefono' => 'nullable|string|max:20',
             'contacto_email' => 'nullable|email|max:150',
-            'activo' => 'boolean'
+            'activo' => 'nullable'
         ]);
 
         $validated['activo'] = $request->has('activo');

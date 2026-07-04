@@ -11,7 +11,6 @@ class AlertaController extends Controller
     {
         $alertas = Alerta::with(['equipo.cliente'])
                         ->where('resuelta', false)
-                        ->orderByDesc('nivel_severidad')
                         ->latest()
                         ->paginate(20);
                         

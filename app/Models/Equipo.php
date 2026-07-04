@@ -9,9 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Equipo extends Model
 {
+    use \App\Models\Concerns\BelongsToTenant;
+
     protected $table = 'equipos';
 
     protected $fillable = [
+        'tenant_id',
         'cliente_id',
         'serial',
         'modelo',

@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Alerta extends Model
 {
+    use \App\Models\Concerns\BelongsToTenant;
+
     protected $table = 'alertas';
 
     protected $fillable = [
+        'tenant_id',
         'equipo_id',
         'tipo',
         'mensaje',

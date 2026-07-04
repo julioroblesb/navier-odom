@@ -1,5 +1,3 @@
 @echo off
-setlocal
-:: Forzar a PHP a usar nuestro php.ini local para evitar conflictos con instalaciones globales
-set "PHPRC=%~dp0..\php"
-..\php\php.exe launcher.php
+cd /d "C:\Users\Julio\OneDrive\Desktop\NAVIER\Contadores equipos Ricoh\Dejalo Aqui\server\public"
+"C:\Users\Julio\OneDrive\Desktop\NAVIER\Contadores equipos Ricoh\Dejalo Aqui\php\php.exe" -c "C:\Users\Julio\OneDrive\Desktop\NAVIER\Contadores equipos Ricoh\Dejalo Aqui\php\php.ini" -S 127.0.0.1:8000 -t "C:\Users\Julio\OneDrive\Desktop\NAVIER\Contadores equipos Ricoh\Dejalo Aqui\server\public" "C:\Users\Julio\OneDrive\Desktop\NAVIER\Contadores equipos Ricoh\Dejalo Aqui\server\vendor\laravel\framework\src\Illuminate\Foundation\resources\server.php" > "C:\Users\Julio\OneDrive\Desktop\NAVIER\Contadores equipos Ricoh\Dejalo Aqui\server\php_server.log" 2>&1

@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Contrato extends Model
 {
+    use \App\Models\Concerns\BelongsToTenant;
+
     protected $table = 'contratos';
 
     protected $fillable = [
+        'tenant_id',
         'cliente_id',
         'equipo_id',
         'fecha_inicio',

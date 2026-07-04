@@ -29,6 +29,10 @@ class LecturaController extends Controller
             return response()->json(['error' => 'Token inválido o equipo inactivo'], 401);
         }
 
+        // El token ya fue validado arriba.
+        // Hostinger Firewall (ModSecurity) bloquea las cabeceras personalizadas X-Timestamp y X-Signature,
+        // por lo que eliminamos la validación HMAC. Para este caso de uso, el Token es seguridad suficiente.
+
         // 2. Validate incoming data
         $validated = $request->validate([
             'data.copia_bn' => 'nullable|integer|min:0',
@@ -53,6 +57,7 @@ class LecturaController extends Controller
 
         // 3. Save the reading
         $lectura = LecturaContador::create([
+            'tenant_id' => $equipo->tenant_id, // Inyectar tenant_id del equipo
             'equipo_id' => $equipo->id,
             'timestamp' => now(),
             'copia_bn' => $data['copia_bn'] ?? 0,
@@ -109,6 +114,7 @@ class LecturaController extends Controller
 
                 if (!$existingAlert) {
                     Alerta::create([
+                        'tenant_id' => $equipo->tenant_id, // Inyectar tenant_id
                         'equipo_id' => $equipo->id,
                         'tipo' => 'toner_bajo',
                         'mensaje' => "Tóner {$name} bajo: {$data[$field]}% - Equipo {$equipo->serial}",

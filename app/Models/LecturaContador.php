@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LecturaContador extends Model
 {
+    use \App\Models\Concerns\BelongsToTenant;
+
     protected $table = 'lecturas_contadores';
 
     /**
@@ -15,6 +17,7 @@ class LecturaContador extends Model
     const UPDATED_AT = null;
 
     protected $fillable = [
+        'tenant_id',
         'equipo_id',
         'timestamp',
         'copia_bn',
