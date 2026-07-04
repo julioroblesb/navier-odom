@@ -78,6 +78,16 @@
                 </div>
 
                 <ul class="topbar-menu d-flex align-items-center gap-3">
+                    <li class="d-none d-sm-inline-block">
+                        <div class="nav-link" id="light-dark-mode" style="cursor: pointer;">
+                            <i class="ri-moon-line fs-22"></i>
+                        </div>
+                    </li>
+                    <li class="d-none d-md-inline-block">
+                        <a class="nav-link" href="#" data-toggle="fullscreen">
+                            <i class="ri-fullscreen-line fs-22"></i>
+                        </a>
+                    </li>
                     <li class="dropdown">
                         <a class="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                             <span class="account-user-avatar">
