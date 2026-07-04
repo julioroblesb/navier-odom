@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Cliente;
+use Illuminate\Http\Request;
+
+class ClienteController extends Controller
+{
+    public function index()
+    {
+        $clientes = Cliente::withCount('equipos')->latest()->paginate(10);
+        return view('clientes.index', compact('clientes'));
+    }
+
+    public function create()
+    {
+        return view('clientes.form', ['cliente' => new Cliente()]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'razon_social' => 'required|string|max:200',
+            'ruc' => 'nullable|string|max:11',
+            'direccion' => 'nullable|string|max:300',
+            'distrito' => 'nullable|string|max:100',
+            'contacto_nombre' => 'nullable|string|max:150',
+            'contacto_telefono' => 'nullable|string|max:20',
+            'contacto_email' => 'nullable|email|max:150',
+            'activo' => 'boolean'
+        ]);
+
+        $validated['activo'] = $request->has('activo');
+
+        Cliente::create($validated);
+        return redirect()->route('clientes.index')->with('success', 'Cliente registrado correctamente.');
+    }
+
+    public function edit(Cliente $cliente)
+    {
+        return view('clientes.form', compact('cliente'));
+    }
+
+    public function update(Request $request, Cliente $cliente)
+    {
+        $validated = $request->validate([
+            'razon_social' => 'required|string|max:200',
+            'ruc' => 'nullable|string|max:11',
+            'direccion' => 'nullable|string|max:300',
+            'distrito' => 'nullable|string|max:100',
+            'contacto_nombre' => 'nullable|string|max:150',
+            'contacto_telefono' => 'nullable|string|max:20',
+            'contacto_email' => 'nullable|email|max:150',
+            'activo' => 'boolean'
+        ]);
+
+        $validated['activo'] = $request->has('activo');
+
+        $cliente->update($validated);
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
+    }
+
+    public function destroy(Cliente $cliente)
+    {
+        if ($cliente->equipos()->count() > 0) {
+            return back()->with('error', 'No se puede eliminar el cliente porque tiene equipos asignados.');
+        }
+        $cliente->delete();
+        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
+    }
+}
