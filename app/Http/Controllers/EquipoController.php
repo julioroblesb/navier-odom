@@ -11,7 +11,7 @@ class EquipoController extends Controller
 {
     public function index()
     {
-        $equipos = Equipo::with(['cliente', 'ultimaLectura'])->latest()->paginate(15);
+        $equipos = Equipo::with(['cliente', 'ultimaLectura'])->latest()->get();
         return view('equipos.index', compact('equipos'));
     }
 

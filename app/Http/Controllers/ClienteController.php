@@ -9,7 +9,7 @@ class ClienteController extends Controller
 {
     public function index()
     {
-        $clientes = Cliente::withCount('equipos')->latest()->paginate(10);
+        $clientes = Cliente::withCount('equipos')->latest()->get();
         return view('clientes.index', compact('clientes'));
     }
 

@@ -16,7 +16,7 @@
             
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table table-centered table-nowrap table-hover mb-0">
+                    <table id="tabla-equipos" class="table table-centered table-nowrap table-hover mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th>Serial / Modelo</th>
@@ -95,13 +95,38 @@
                     </table>
                 </div>
 
-                @if($equipos->hasPages())
-                <div class="mt-3">
-                    {{ $equipos->links('pagination::bootstrap-5') }}
-                </div>
-                @endif
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('styles')
+<link href="{{ asset('assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+@endpush
+
+@push('scripts')
+<script src="{{ asset('assets/vendor/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+<script>
+$(document).ready(function() {
+    $('#tabla-equipos').DataTable({
+        responsive: true,
+        language: {
+            search: 'Buscar:',
+            lengthMenu: 'Mostrar _MENU_ registros',
+            info: 'Mostrando _START_ a _END_ de _TOTAL_ equipos',
+            infoEmpty: 'No hay equipos',
+            infoFiltered: '(filtrado de _MAX_ registros)',
+            zeroRecords: 'No se encontraron equipos',
+            paginate: { first: 'Primero', last: 'Último', next: 'Siguiente', previous: 'Anterior' }
+        },
+        pageLength: 15,
+        order: [[3, 'desc']]
+    });
+});
+</script>
+@endpush

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Equipo;
 use App\Models\LecturaContador;
 use Illuminate\Http\Request;
 
@@ -9,21 +10,24 @@ class LecturaWebController extends Controller
 {
     public function index(Request $request)
     {
-        $query = LecturaContador::with(['equipo.cliente']);
+        // Get all equipos with their latest lectura
+        $query = \App\Models\Equipo::with(['cliente', 'ultimaLectura'])
+            ->whereHas('ultimaLectura');
         
-        // Simple search by serial or cliente
+        // Simple search
         if ($request->filled('q')) {
             $q = $request->q;
-            $query->whereHas('equipo', function($eq) use ($q) {
+            $query->where(function($eq) use ($q) {
                 $eq->where('serial', 'like', "%{$q}%")
+                   ->orWhere('modelo', 'like', "%{$q}%")
                    ->orWhereHas('cliente', function($cl) use ($q) {
                        $cl->where('razon_social', 'like', "%{$q}%");
                    });
             });
         }
 
-        $lecturas = $query->latest()->paginate(20);
+        $equipos = $query->get();
         
-        return view('lecturas.index', compact('lecturas'));
+        return view('lecturas.index', compact('equipos'));
     }
 }
