@@ -157,8 +157,8 @@
             </div>
             <div class="card-body">
                 <div style="height: 320px;">
-                    @if($lecturas->count() > 1)
-                        <canvas id="countersChart"></canvas>
+                    @if($lecturasMensuales->count() > 0)
+                        <div id="countersChart"></div>
                     @else
                         <div class="h-100 d-flex flex-column align-items-center justify-content-center">
                             <i class="ri-line-chart-line text-muted display-4 mb-2"></i>
@@ -255,49 +255,79 @@ $(document).ready(function() {
     table.buttons().container().appendTo('#tabla-historial_wrapper .col-md-6:eq(0)');
 });
 </script>
-@if($lecturas->count() > 1)
+<!-- ApexCharts -->
+<script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+
+@if($lecturasMensuales->count() > 0)
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const ctx = document.getElementById('countersChart').getContext('2d');
-        
-        const labels = {!! json_encode($lecturas->reverse()->map(fn($l) => $l->created_at->format('d/m H:i'))->values()) !!};
-        const dataBn = {!! json_encode($lecturas->reverse()->pluck('total_bn')->values()) !!};
-        const dataColor = {!! json_encode($lecturas->reverse()->pluck('total_color')->values()) !!};
+        @php
+            $hasColor = $lecturasMensuales->max('total_color') > 0;
+            $labels = $lecturasMensuales->keys();
+            $dataBn = $lecturasMensuales->pluck('total_bn');
+            $dataColor = $lecturasMensuales->pluck('total_color');
+        @endphp
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Total B/N',
-                        data: dataBn,
-                        borderColor: '#313a46',
-                        backgroundColor: 'rgba(49, 58, 70, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    },
-                    {
-                        label: 'Total Color',
-                        data: dataColor,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'top' },
+        var options = {
+            chart: {
+                height: 320,
+                type: 'area',
+                toolbar: {
+                    show: false
                 },
-                scales: {
-                    y: { beginAtZero: false }
+                background: 'transparent'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2
+            },
+            series: [
+                {
+                    name: 'Total B/N',
+                    data: {!! json_encode($dataBn) !!}
                 }
+                @if($hasColor)
+                , {
+                    name: 'Total Color',
+                    data: {!! json_encode($dataColor) !!}
+                }
+                @endif
+            ],
+            colors: [
+                '#6c757d' 
+                @if($hasColor) , '#3b82f6' @endif
+            ],
+            xaxis: {
+                categories: {!! json_encode($labels) !!},
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (value) {
+                        return value.toLocaleString();
+                    }
+                }
+            },
+            grid: {
+                borderColor: 'rgba(108, 117, 125, 0.15)',
+                strokeDashArray: 4,
+            },
+            theme: {
+                mode: 'dark'
+            },
+            legend: {
+                position: 'bottom'
             }
-        });
+        }
+
+        var chart = new ApexCharts(
+            document.querySelector("#countersChart"),
+            options
+        );
+
+        chart.render();
     });
 </script>
 @endif

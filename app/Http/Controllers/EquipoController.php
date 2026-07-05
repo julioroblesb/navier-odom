@@ -46,7 +46,18 @@ class EquipoController extends Controller
             $q->where('resuelta', false);
         }]);
         $lecturas = $equipo->lecturas()->latest()->take(30)->get();
-        return view('equipos.show', compact('equipo', 'lecturas'));
+        
+        $lecturasMensuales = $equipo->lecturas()
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->groupBy(function($val) {
+                return \Carbon\Carbon::parse($val->created_at)->format('M y');
+            })
+            ->map(function($group) {
+                return $group->last();
+            });
+
+        return view('equipos.show', compact('equipo', 'lecturas', 'lecturasMensuales'));
     }
 
     public function edit(Equipo $equipo)
