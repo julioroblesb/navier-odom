@@ -98,9 +98,7 @@
 </div>
 @endsection
 
-@push('styles')
-<link href="{{ asset('assets/vendor/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
-@endpush
+
 
 @push('scripts')
 <script src="{{ asset('assets/vendor/select2/js/select2.min.js') }}"></script>
