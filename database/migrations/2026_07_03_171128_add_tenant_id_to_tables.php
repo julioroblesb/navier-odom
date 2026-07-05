@@ -14,9 +14,11 @@ return new class extends Migration
         $tables = ['users', 'clientes', 'equipos', 'contratos', 'alertas', 'lecturas_contadores'];
 
         foreach ($tables as $table) {
-            Schema::table($table, function (Blueprint $t) {
-                $t->foreignId('tenant_id')->nullable()->constrained('tenants')->onDelete('cascade');
-            });
+            if (!Schema::hasColumn($table, 'tenant_id')) {
+                Schema::table($table, function (Blueprint $t) {
+                    $t->foreignId('tenant_id')->nullable()->constrained('tenants')->onDelete('cascade');
+                });
+            }
         }
     }
 

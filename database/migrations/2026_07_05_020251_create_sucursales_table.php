@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sucursales', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
-            $table->string('nombre');
-            $table->string('direccion')->nullable();
-            $table->string('contacto')->nullable();
-            $table->string('telefono')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('sucursales')) {
+            Schema::create('sucursales', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
+                $table->string('nombre');
+                $table->string('direccion')->nullable();
+                $table->string('contacto')->nullable();
+                $table->string('telefono')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

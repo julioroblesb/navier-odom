@@ -12,20 +12,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('equipos', function (Blueprint $table) {
-            $table->foreignId('sucursal_id')->nullable()->constrained('sucursales')->nullOnDelete();
+            if (!Schema::hasColumn('equipos', 'sucursal_id')) {
+                $table->foreignId('sucursal_id')->nullable()->constrained('sucursales')->nullOnDelete();
+            }
         });
 
-        // Migrate existing data
+        // Migrate existing data only if they haven't been migrated yet (e.g. equipment with null sucursal_id)
         $clientes = \App\Models\Cliente::all();
         foreach ($clientes as $cliente) {
-            $sucursal = \App\Models\Sucursal::create([
-                'cliente_id' => $cliente->id,
-                'nombre' => 'Sede Principal',
-                'direccion' => $cliente->direccion ?? null,
-                'telefono' => $cliente->telefono ?? null,
-            ]);
+            // Check if Sede Principal already exists for this client to avoid duplicates
+            $sucursal = \App\Models\Sucursal::firstOrCreate(
+                ['cliente_id' => $cliente->id, 'nombre' => 'Sede Principal'],
+                [
+                    'direccion' => $cliente->direccion ?? null,
+                    'telefono' => $cliente->telefono ?? null,
+                ]
+            );
 
             \App\Models\Equipo::where('cliente_id', $cliente->id)
+                ->whereNull('sucursal_id')
                 ->update(['sucursal_id' => $sucursal->id]);
         }
     }

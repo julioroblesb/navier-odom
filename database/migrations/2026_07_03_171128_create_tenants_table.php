@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tenants', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre_empresa');
-            $table->string('estado')->default('activo'); // activo, suspendido
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('tenants')) {
+            Schema::create('tenants', function (Blueprint $table) {
+                $table->id();
+                $table->string('nombre_empresa');
+                $table->string('estado')->default('activo'); // activo, suspendido
+                $table->timestamps();
+            });
+        }
     }
 
     /**
