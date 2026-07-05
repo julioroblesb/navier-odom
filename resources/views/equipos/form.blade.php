@@ -35,7 +35,7 @@
 
                         <div class="col-md-12">
                             <label class="form-label fw-bold">Cliente / Sucursal Asignada *</label>
-                            <select name="sucursal_id" class="form-select @error('sucursal_id') is-invalid @enderror" required>
+                            <select name="sucursal_id" class="form-control select2 @error('sucursal_id') is-invalid @enderror" data-toggle="select2" required>
                                 <option value="">-- Seleccionar --</option>
                                 @foreach($clientes as $cliente)
                                     @if($cliente->sucursales->count() > 0)
@@ -97,3 +97,19 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+<link href="{{ asset('assets/vendor/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
+@endpush
+
+@push('scripts')
+<script src="{{ asset('assets/vendor/select2/js/select2.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            theme: 'bootstrap-5', // Hyper often uses a similar style or default
+            width: '100%'
+        });
+    });
+</script>
+@endpush
