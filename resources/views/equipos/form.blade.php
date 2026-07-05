@@ -106,10 +106,7 @@
 <script src="{{ asset('assets/vendor/select2/js/select2.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('.select2').select2({
-            theme: 'bootstrap-5', // Hyper often uses a similar style or default
-            width: '100%'
-        });
+        $('[data-toggle="select2"]').select2();
     });
 </script>
 @endpush
