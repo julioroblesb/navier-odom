@@ -43,6 +43,7 @@ Route::middleware(['auth', 'check.tenant.status'])->group(function () {
     Route::resource('clientes', ClienteController::class);
     Route::resource('sucursales', \App\Http\Controllers\SucursalController::class)->except(['index', 'create', 'show', 'edit']);
     Route::resource('equipos', EquipoController::class);
+    Route::post('/equipos/{equipo}/reveal-token', [EquipoController::class, 'revealToken'])->name('equipos.reveal_token');
 
     Route::get('/lecturas', [LecturaWebController::class, 'index'])->name('lecturas.index');
     Route::get('/alertas', [AlertaController::class, 'index'])->name('alertas.index');

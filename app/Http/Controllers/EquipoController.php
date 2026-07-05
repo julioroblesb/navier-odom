@@ -93,4 +93,14 @@ class EquipoController extends Controller
         $equipo->delete();
         return redirect()->route('equipos.index')->with('success', 'Equipo eliminado correctamente.');
     }
+
+    /**
+     * Retrieve the agent token securely via AJAX
+     */
+    public function revealToken(Equipo $equipo)
+    {
+        return response()->json([
+            'token' => $equipo->agente_token
+        ]);
+    }
 }

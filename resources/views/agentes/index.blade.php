@@ -67,7 +67,6 @@
                                 <option value="{{ $equipo->id }}" 
                                         data-serial="{{ $equipo->serial }}" 
                                         data-ip="{{ $equipo->ip_local ?? '192.168.1.XX' }}"
-                                        data-token="{{ $equipo->agente_token }}"
                                         data-cliente="{{ $equipo->cliente ? $equipo->cliente->razon_social : 'Sin Asignar' }}">
                                     {{ $equipo->serial }} - {{ $equipo->modelo }} 
                                 </option>
@@ -128,18 +127,42 @@ Selecciona un equipo y dale a "Agregar" para generar el código...
         if (!select.value) return;
         
         const selected = select.options[select.selectedIndex];
-        
         currentConfig.empresa = selected.dataset.cliente;
         
-        const exists = currentConfig.printers.find(p => p.token === selected.dataset.token);
-        if (!exists) {
-            currentConfig.printers.push({
-                ip: selected.dataset.ip,
-                token: selected.dataset.token
-            });
-        }
-        
-        renderPreview();
+        const equipoId = select.value;
+        const btnAdd = event.currentTarget || document.querySelector('button[onclick="addPrinterToConfig()"]');
+        const originalHtml = btnAdd.innerHTML;
+        btnAdd.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        btnAdd.disabled = true;
+
+        fetch(`/equipos/${equipoId}/reveal-token`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.token) {
+                const exists = currentConfig.printers.find(p => p.token === data.token);
+                if (!exists) {
+                    currentConfig.printers.push({
+                        ip: selected.dataset.ip,
+                        token: data.token
+                    });
+                }
+                renderPreview();
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching token', err);
+            alert('No se pudo obtener el token de instalación.');
+        })
+        .finally(() => {
+            btnAdd.innerHTML = originalHtml;
+            btnAdd.disabled = false;
+        });
     }
     
     function clearConfig() {

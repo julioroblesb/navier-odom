@@ -68,9 +68,12 @@
                     <li class="mt-4 pt-3 border-top border-light">
                         <small class="text-muted d-block mb-2">Token de Agente (API)</small>
                         <div class="input-group input-group-sm">
-                            <input type="password" class="form-control font-monospace bg-light" value="{{ $equipo->agente_token }}" id="tokenInput" readonly>
-                            <button class="btn btn-primary" type="button" onclick="const i = document.getElementById('tokenInput'); i.type = i.type === 'password' ? 'text' : 'password';">
-                                <i class="ri-eye-line"></i>
+                            <input type="password" class="form-control font-monospace bg-light" value="************************" id="tokenInput" readonly>
+                            <button class="btn btn-primary" type="button" id="btnRevealToken" data-url="{{ route('equipos.reveal_token', $equipo->id) }}">
+                                <i class="ri-eye-line"></i> Revelar
+                            </button>
+                            <button class="btn btn-outline-secondary" type="button" id="btnCopyToken" style="display:none;">
+                                <i class="ri-clipboard-line"></i> Copiar
                             </button>
                         </div>
                     </li>
@@ -336,5 +339,58 @@ $(document).ready(function() {
         chart.render();
     });
 </script>
-@endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnReveal = document.getElementById('btnRevealToken');
+        const btnCopy = document.getElementById('btnCopyToken');
+        const tokenInput = document.getElementById('tokenInput');
+
+        if (btnReveal) {
+            btnReveal.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                
+                // Show loading state
+                const originalHtml = this.innerHTML;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                this.disabled = true;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.token) {
+                        tokenInput.type = 'text';
+                        tokenInput.value = data.token;
+                        btnReveal.style.display = 'none';
+                        btnCopy.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching token:', error);
+                    alert('Error al obtener el token.');
+                    this.innerHTML = originalHtml;
+                    this.disabled = false;
+                });
+            });
+        }
+
+        if (btnCopy) {
+            btnCopy.addEventListener('click', function() {
+                tokenInput.select();
+                document.execCommand('copy');
+                const originalHtml = this.innerHTML;
+                this.innerHTML = '<i class="ri-check-line text-success"></i> Copiado';
+                setTimeout(() => {
+                    this.innerHTML = originalHtml;
+                }, 2000);
+            });
+        }
+    });
+</script>
 @endpush

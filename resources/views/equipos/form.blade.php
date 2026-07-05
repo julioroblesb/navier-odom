@@ -74,14 +74,14 @@
 
                     @if($equipo->exists)
                     <div class="mt-4 p-3 bg-light rounded border border-light">
-                        <label class="form-label fw-bold"><i class="ri-shield-keyhole-line"></i> Token del Agente (Solo lectura)</label>
+                        <label class="form-label fw-bold"><i class="ri-shield-keyhole-line"></i> Token del Agente (API)</label>
                         <div class="input-group">
-                            <input type="text" class="form-control font-monospace" value="{{ $equipo->agente_token }}" id="agentToken" readonly>
-                            <button class="btn btn-primary" type="button" onclick="navigator.clipboard.writeText(document.getElementById('agentToken').value); alert('Token copiado');">
-                                <i class="ri-clipboard-line"></i> Copiar
-                            </button>
+                            <input type="text" class="form-control font-monospace text-muted" value="************************" disabled>
+                            <a href="{{ route('equipos.show', $equipo->id) }}" class="btn btn-primary">
+                                <i class="ri-eye-line"></i> Ver Detalle para Copiar
+                            </a>
                         </div>
-                        <div class="form-text text-muted">Este token debe configurarse en el archivo `config.json` del agente instalado en la red del cliente.</div>
+                        <div class="form-text text-muted">Por seguridad, el token solo puede revelarse desde la vista de Detalle del Equipo.</div>
                     </div>
                     @endif
 
