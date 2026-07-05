@@ -16,8 +16,8 @@
             
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table id="tabla-equipos" class="table table-centered table-nowrap table-hover mb-0">
-                        <thead class="table-light">
+                    <table id="tabla-equipos" class="table table-striped dt-responsive nowrap w-100">
+                        <thead>
                             <tr>
                                 <th>Serial / Modelo</th>
                                 <th>Cliente Asignado</th>
