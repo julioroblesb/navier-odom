@@ -29,9 +29,9 @@ Route::get('/agente', function () {
 Route::middleware(['auth', 'check.tenant.status'])->group(function () {
     Route::get('/', function () {
         if (auth()->user()->is_super_admin) {
-            return app()->call([\App\Http\Controllers\AdminDashboardController::class, 'index']);
+            return app(\App\Http\Controllers\AdminDashboardController::class)->index();
         }
-        return app()->call([\App\Http\Controllers\DashboardController::class, 'index']);
+        return app(\App\Http\Controllers\DashboardController::class)->index();
     })->name('dashboard');
 
     Route::resource('clientes', ClienteController::class);
