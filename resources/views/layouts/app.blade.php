@@ -158,6 +158,7 @@
 
                     <li class="side-nav-title">Principal</li>
 
+                    @if(!auth()->user()->is_super_admin)
                     <li class="side-nav-item">
                         <a href="{{ route('dashboard') }}" class="side-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                             <i class="ri-dashboard-2-fill"></i>
@@ -206,8 +207,16 @@
                             <span> Agentes </span>
                         </a>
                     </li>
+                    @endif
 
                     @if(auth()->check() && auth()->user()->is_super_admin)
+                    <li class="side-nav-item">
+                        <a href="{{ route('dashboard') }}" class="side-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                            <i class="ri-dashboard-2-fill text-warning"></i>
+                            <span class="text-warning"> Dashboard (SA) </span>
+                        </a>
+                    </li>
+
                     <li class="side-nav-item mt-3">
                         <a href="{{ route('tenants.index') }}" class="side-nav-link {{ request()->routeIs('tenants.*') ? 'active' : '' }}">
                             <i class="ri-admin-fill text-warning"></i>
@@ -225,6 +234,13 @@
         <!-- ============================================================== -->
         <!-- Start Page Content here -->
         <!-- ============================================================== -->
+
+        @if(auth()->check() && auth()->user()->tenant && auth()->user()->tenant->estado === 'suspendido')
+        <div style="position: fixed; top: 70px; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.05); z-index: 9999; backdrop-filter: blur(1px);"></div>
+        <div style="position: fixed; top: 70px; left: 0; right: 0; background: #fa5c7c; color: white; text-align: center; padding: 10px; z-index: 10000; font-weight: bold; font-size: 16px;">
+            <i class="ri-error-warning-line me-1"></i> Cuenta suspendida - Modo de sólo lectura
+        </div>
+        @endif
 
         <div class="content-page">
             <div class="content">

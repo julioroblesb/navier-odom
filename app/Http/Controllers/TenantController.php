@@ -11,7 +11,7 @@ class TenantController extends Controller
      */
     public function index()
     {
-        $tenants = \App\Models\Tenant::withCount('users')->get();
+        $tenants = \App\Models\Tenant::withCount(['users', 'clientes', 'equipos'])->get();
         return view('tenants.index', compact('tenants'));
     }
 
@@ -30,6 +30,9 @@ class TenantController extends Controller
     {
         $request->validate([
             'nombre_empresa' => 'required|string|max:255',
+            'plan_type' => 'required|in:Demo,Mensual,Anual,Lifetime',
+            'billing_status' => 'required|in:Al día,Pendiente',
+            'demo_expires_at' => 'nullable|date',
             'admin_name' => 'required|string|max:255',
             'admin_email' => 'required|string|email|max:255|unique:users,email',
             'admin_password' => 'required|string|min:8',
@@ -39,6 +42,9 @@ class TenantController extends Controller
             $tenant = \App\Models\Tenant::create([
                 'nombre_empresa' => $request->nombre_empresa,
                 'estado' => 'activo',
+                'plan_type' => $request->plan_type,
+                'billing_status' => $request->billing_status,
+                'demo_expires_at' => $request->demo_expires_at,
             ]);
 
             \App\Models\User::create([
@@ -71,11 +77,17 @@ class TenantController extends Controller
         $request->validate([
             'nombre_empresa' => 'required|string|max:255',
             'estado' => 'required|in:activo,suspendido',
+            'plan_type' => 'required|in:Demo,Mensual,Anual,Lifetime',
+            'billing_status' => 'required|in:Al día,Pendiente',
+            'demo_expires_at' => 'nullable|date',
         ]);
 
         $tenant->update([
             'nombre_empresa' => $request->nombre_empresa,
             'estado' => $request->estado,
+            'plan_type' => $request->plan_type,
+            'billing_status' => $request->billing_status,
+            'demo_expires_at' => $request->demo_expires_at,
         ]);
 
         return redirect()->route('tenants.index')->with('success', 'Empresa actualizada exitosamente.');

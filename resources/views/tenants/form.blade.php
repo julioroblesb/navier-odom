@@ -24,6 +24,36 @@
                             @error('nombre_empresa') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
+                        <div class="col-12 mt-3 mb-1">
+                            <h5 class="font-14 text-muted border-bottom pb-2">Información Comercial y Facturación</h5>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold" for="plan_type">Plan Contratado *</label>
+                            <select class="form-select @error('plan_type') is-invalid @enderror" id="plan_type" name="plan_type" required>
+                                <option value="Demo" {{ (old('plan_type', $tenant->plan_type ?? '') === 'Demo') ? 'selected' : '' }}>Demo</option>
+                                <option value="Mensual" {{ (old('plan_type', $tenant->plan_type ?? '') === 'Mensual') ? 'selected' : '' }}>Mensual</option>
+                                <option value="Anual" {{ (old('plan_type', $tenant->plan_type ?? '') === 'Anual') ? 'selected' : '' }}>Anual</option>
+                                <option value="Lifetime" {{ (old('plan_type', $tenant->plan_type ?? '') === 'Lifetime') ? 'selected' : '' }}>Lifetime</option>
+                            </select>
+                            @error('plan_type') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold" for="billing_status">Estado de Facturación *</label>
+                            <select class="form-select @error('billing_status') is-invalid @enderror" id="billing_status" name="billing_status" required>
+                                <option value="Al día" {{ (old('billing_status', $tenant->billing_status ?? 'Al día') === 'Al día') ? 'selected' : '' }}>Al día</option>
+                                <option value="Pendiente" {{ (old('billing_status', $tenant->billing_status ?? '') === 'Pendiente') ? 'selected' : '' }}>Pendiente</option>
+                            </select>
+                            @error('billing_status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold" for="demo_expires_at">Vencimiento Demo (Opcional)</label>
+                            <input class="form-control @error('demo_expires_at') is-invalid @enderror" id="demo_expires_at" name="demo_expires_at" type="date" value="{{ old('demo_expires_at', isset($tenant) && $tenant->demo_expires_at ? $tenant->demo_expires_at->format('Y-m-d') : '') }}">
+                            @error('demo_expires_at') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
                         @if(isset($tenant))
                         <div class="col-md-6">
                             <label class="form-label fw-bold" for="estado">Estado de la Cuenta</label>

@@ -27,7 +27,12 @@ Route::get('/agente', function () {
 
 // Rutas protegidas (Requieren autenticación)
 Route::middleware(['auth', 'check.tenant.status'])->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', function () {
+        if (auth()->user()->is_super_admin) {
+            return app()->call([\App\Http\Controllers\AdminDashboardController::class, 'index']);
+        }
+        return app()->call([\App\Http\Controllers\DashboardController::class, 'index']);
+    })->name('dashboard');
 
     Route::resource('clientes', ClienteController::class);
     Route::resource('sucursales', \App\Http\Controllers\SucursalController::class)->except(['index', 'create', 'show', 'edit']);

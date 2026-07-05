@@ -14,12 +14,7 @@ class CheckTenantStatusMiddleware
             return $next($request);
         }
 
-        // Check if the user belongs to a tenant and if it's suspended
-        if (auth()->check() && auth()->user()->tenant) {
-            if (auth()->user()->tenant->estado === 'suspendido') {
-                return response()->view('errors.suspended');
-            }
-        }
+        // Suspension logic is now handled in the views (Read-Only mode)
 
         return $next($request);
     }

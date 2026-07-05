@@ -12,11 +12,28 @@ class Tenant extends Model
 
     protected $fillable = [
         'nombre_empresa',
-        'estado'
+        'estado',
+        'plan_type',
+        'demo_expires_at',
+        'billing_status'
+    ];
+
+    protected $casts = [
+        'demo_expires_at' => 'date'
     ];
 
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function clientes()
+    {
+        return $this->hasMany(Cliente::class);
+    }
+
+    public function equipos()
+    {
+        return $this->hasMany(Equipo::class);
     }
 }
