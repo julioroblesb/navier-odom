@@ -7,8 +7,17 @@ use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        \App\Jobs\LogAuditAction::dispatch([
+            'user_id' => auth()->id(),
+            'tenant_id' => auth()->user()->tenant_id,
+            'target_type' => 'Cliente',
+            'target_id' => null,
+            'action' => 'view_list',
+            'ip_address' => $request->ip(),
+        ]);
+
         $clientes = Cliente::withCount('equipos')->latest()->get();
         return view('clientes.index', compact('clientes'));
     }
@@ -18,8 +27,17 @@ class ClienteController extends Controller
         return view('clientes.form', ['cliente' => new Cliente()]);
     }
 
-    public function show(Cliente $cliente)
+    public function show(Cliente $cliente, Request $request)
     {
+        \App\Jobs\LogAuditAction::dispatch([
+            'user_id' => auth()->id(),
+            'tenant_id' => auth()->user()->tenant_id,
+            'target_type' => 'Cliente',
+            'target_id' => $cliente->id,
+            'action' => 'view_detail',
+            'ip_address' => $request->ip(),
+        ]);
+
         $cliente->load('sucursales.equipos');
         return view('clientes.show', compact('cliente'));
     }
@@ -39,7 +57,17 @@ class ClienteController extends Controller
 
         $validated['activo'] = $request->has('activo');
 
-        Cliente::create($validated);
+        $cliente = Cliente::create($validated);
+        
+        \App\Jobs\LogAuditAction::dispatch([
+            'user_id' => auth()->id(),
+            'tenant_id' => auth()->user()->tenant_id,
+            'target_type' => 'Cliente',
+            'target_id' => $cliente->id,
+            'action' => 'create',
+            'ip_address' => $request->ip(),
+        ]);
+
         return redirect()->route('clientes.index')->with('success', 'Cliente registrado correctamente.');
     }
 
@@ -64,6 +92,16 @@ class ClienteController extends Controller
         $validated['activo'] = $request->has('activo');
 
         $cliente->update($validated);
+
+        \App\Jobs\LogAuditAction::dispatch([
+            'user_id' => auth()->id(),
+            'tenant_id' => auth()->user()->tenant_id,
+            'target_type' => 'Cliente',
+            'target_id' => $cliente->id,
+            'action' => 'update',
+            'ip_address' => $request->ip(),
+        ]);
+
         return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
     }
 
@@ -72,7 +110,18 @@ class ClienteController extends Controller
         if ($cliente->equipos()->count() > 0) {
             return back()->with('error', 'No se puede eliminar el cliente porque tiene equipos asignados.');
         }
+        $clienteId = $cliente->id;
         $cliente->delete();
+
+        \App\Jobs\LogAuditAction::dispatch([
+            'user_id' => auth()->id(),
+            'tenant_id' => auth()->user()->tenant_id,
+            'target_type' => 'Cliente',
+            'target_id' => $clienteId,
+            'action' => 'delete',
+            'ip_address' => request()->ip(),
+        ]);
+
         return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
     }
 }
