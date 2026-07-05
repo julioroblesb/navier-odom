@@ -22,6 +22,11 @@ class DashboardController extends Controller
         ];
 
         $ultimasLecturas = LecturaContador::with(['equipo.cliente'])
+            ->whereIn('id', function($query) {
+                $query->select(\Illuminate\Support\Facades\DB::raw('MAX(id)'))
+                      ->from('lecturas_contadores')
+                      ->groupBy('equipo_id');
+            })
             ->latest()
             ->take(10)
             ->get();

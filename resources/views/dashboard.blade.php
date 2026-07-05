@@ -72,6 +72,7 @@
                                 <th>Cliente</th>
                                 <th>B/N</th>
                                 <th>Color</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,10 +86,11 @@
                                 <td>{{ $lectura->equipo->cliente->razon_social ?? 'Sin cliente' }}</td>
                                 <td>{{ number_format($lectura->total_bn) }}</td>
                                 <td>{{ number_format($lectura->total_color) }}</td>
+                                <td><span class="badge bg-primary rounded-pill">{{ number_format($lectura->total_bn + $lectura->total_color) }}</span></td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">No hay lecturas recientes.</td>
+                                <td colspan="6" class="text-center text-muted py-4">No hay lecturas recientes.</td>
                             </tr>
                             @endforelse
                         </tbody>
