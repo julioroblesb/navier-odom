@@ -83,8 +83,8 @@
                                     <small class="d-block text-muted">{{ $lectura->equipo->numero_serie }}</small>
                                 </td>
                                 <td>{{ $lectura->equipo->cliente->razon_social ?? 'Sin cliente' }}</td>
-                                <td><span class="badge bg-dark rounded-pill">{{ number_format($lectura->total_bn) }}</span></td>
-                                <td><span class="badge bg-primary rounded-pill">{{ number_format($lectura->total_color) }}</span></td>
+                                <td>{{ number_format($lectura->total_bn) }}</td>
+                                <td>{{ number_format($lectura->total_color) }}</td>
                             </tr>
                             @empty
                             <tr>

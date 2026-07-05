@@ -39,7 +39,7 @@
             <div class="card-header">
                 <h4 class="header-title">Información General</h4>
             </div>
-            <div class="card-body pt-0">
+            <div class="card-body">
                 <ul class="list-unstyled mb-0">
                     <li class="mb-3">
                         <small class="text-muted d-block">Cliente Asignado</small>
@@ -77,7 +77,7 @@
             <div class="card-header bg-warning-lighten">
                 <h4 class="header-title text-warning"><i class="ri-error-warning-fill me-1"></i> Alertas Activas</h4>
             </div>
-            <div class="card-body pt-0">
+            <div class="card-body">
                 @foreach($equipo->alertas as $alerta)
                 <div class="alert {{ $alerta->tipo === 'toner_bajo' ? 'alert-warning' : 'alert-danger' }} mb-2">
                     <small class="fw-bold">{{ $alerta->mensaje }}</small>
@@ -94,7 +94,7 @@
                 <h4 class="header-title">Niveles de Tóner Actual</h4>
                 <small class="text-muted">{{ $lecturas->first()->created_at->diffForHumans() }}</small>
             </div>
-            <div class="card-body pt-0">
+            <div class="card-body">
                 @php $latest = $lecturas->first(); @endphp
                 
                 @if($latest->toner_negro !== null)
@@ -155,7 +155,7 @@
             <div class="card-header">
                 <h4 class="header-title">Evolución de Contadores</h4>
             </div>
-            <div class="card-body pt-0">
+            <div class="card-body">
                 <div style="height: 320px;">
                     @if($lecturas->count() > 1)
                         <canvas id="countersChart"></canvas>
@@ -173,7 +173,7 @@
             <div class="card-header">
                 <h4 class="header-title">Historial de Lecturas (Últimas 30)</h4>
             </div>
-            <div class="card-body pt-0">
+            <div class="card-body">
                 <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                     <table id="tabla-historial" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
@@ -189,9 +189,9 @@
                             @forelse($lecturas as $lectura)
                             <tr>
                                 <td>{{ $lectura->created_at->format('d/m/Y H:i:s') }}</td>
-                                <td><span class="badge bg-secondary rounded-pill">{{ number_format($lectura->total_global) }}</span></td>
-                                <td><span class="badge bg-dark rounded-pill">{{ number_format($lectura->total_bn) }}</span></td>
-                                <td><span class="badge bg-primary rounded-pill">{{ number_format($lectura->total_color) }}</span></td>
+                                <td>{{ number_format($lectura->total_global) }}</td>
+                                <td>{{ number_format($lectura->total_bn) }}</td>
+                                <td>{{ number_format($lectura->total_color) }}</td>
                                 <td>{{ number_format($lectura->escaneos) }}</td>
                             </tr>
                             @empty

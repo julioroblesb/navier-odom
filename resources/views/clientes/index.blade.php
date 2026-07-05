@@ -14,7 +14,7 @@
                 </a>
             </div>
             
-            <div class="card-body pt-0">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table id="tabla-clientes" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
@@ -46,7 +46,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge bg-secondary rounded-pill">{{ $cliente->equipos_count }}</span>
+                                    {{ $cliente->equipos_count }}
                                 </td>
                                 <td>
                                     @if($cliente->activo)

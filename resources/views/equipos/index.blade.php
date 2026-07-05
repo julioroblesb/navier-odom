@@ -14,7 +14,7 @@
                 </a>
             </div>
             
-            <div class="card-body pt-0">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table id="tabla-equipos" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
