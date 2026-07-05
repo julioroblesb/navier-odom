@@ -25,6 +25,16 @@ Route::get('/agente', function () {
     return response()->download($path, 'navier-agent.exe');
 });
 
+// Ruta secreta temporal para correr migraciones
+Route::get('/actualizar-bd-secreta', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return "Migración completada con éxito. Ya puedes usar el sistema.";
+    } catch (\Exception $e) {
+        return "Error en la migración: " . $e->getMessage();
+    }
+});
+
 // Rutas protegidas (Requieren autenticación)
 Route::middleware(['auth', 'check.tenant.status'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
