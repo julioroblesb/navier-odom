@@ -93,6 +93,7 @@
 @push('styles')
 <link href="{{ asset('assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/vendor/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 
 @push('scripts')
@@ -100,10 +101,19 @@
 <script src="{{ asset('assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
 <script>
 $(document).ready(function() {
-    $('#tabla-clientes').DataTable({
+    var table = $('#tabla-clientes').DataTable({
         responsive: true,
+        lengthChange: false,
+        buttons: [{
+            extend: 'csvHtml5',
+            text: '<i class="ri-file-download-line"></i> Exportar CSV',
+            className: 'btn btn-primary'
+        }],
         language: {
             search: 'Buscar:',
             lengthMenu: 'Mostrar _MENU_ registros',
@@ -116,6 +126,8 @@ $(document).ready(function() {
         pageLength: 10,
         order: [[0, 'asc']]
     });
+    
+    table.buttons().container().appendTo('#tabla-clientes_wrapper .col-md-6:eq(0)');
 });
 </script>
 @endpush

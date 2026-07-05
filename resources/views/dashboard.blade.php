@@ -64,8 +64,8 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table table-centered table-nowrap table-hover mb-0">
-                        <thead class="table-light">
+                    <table class="table table-striped dt-responsive nowrap w-100">
+                        <thead>
                             <tr>
                                 <th>Fecha</th>
                                 <th>Equipo</th>

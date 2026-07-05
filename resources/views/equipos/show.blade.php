@@ -175,8 +175,8 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                    <table class="table table-centered table-nowrap table-hover mb-0">
-                        <thead class="table-light">
+                    <table id="tabla-historial" class="table table-striped dt-responsive nowrap w-100">
+                        <thead>
                             <tr>
                                 <th>Fecha y Hora</th>
                                 <th>Total General</th>
@@ -210,9 +210,51 @@
 </div>
 @endsection
 
+@push('styles')
+<link href="{{ asset('assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/vendor/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+@endpush
+
 @push('scripts')
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- DataTables -->
+<script src="{{ asset('assets/vendor/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    var table = $('#tabla-historial').DataTable({
+        responsive: true,
+        lengthChange: false,
+        buttons: [{
+            extend: 'csvHtml5',
+            text: '<i class="ri-file-download-line"></i> Exportar CSV',
+            className: 'btn btn-primary'
+        }],
+        language: {
+            search: 'Buscar:',
+            lengthMenu: 'Mostrar _MENU_ registros',
+            info: 'Mostrando _START_ a _END_ de _TOTAL_ lecturas',
+            infoEmpty: 'No hay lecturas registradas',
+            infoFiltered: '(filtrado de _MAX_ registros)',
+            zeroRecords: 'No se encontraron resultados',
+            paginate: { first: 'Primero', last: 'Último', next: 'Siguiente', previous: 'Anterior' }
+        },
+        pageLength: 10,
+        order: [[0, 'desc']]
+    });
+    
+    table.buttons().container().appendTo('#tabla-historial_wrapper .col-md-6:eq(0)');
+});
+</script>
 @if($lecturas->count() > 1)
 <script>
     document.addEventListener("DOMContentLoaded", function() {
