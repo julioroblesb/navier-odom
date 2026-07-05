@@ -16,6 +16,15 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Ruta pública para descargar el agente rápidamente
+Route::get('/agente', function () {
+    $path = public_path('downloads/navier-agent.exe');
+    if (!file_exists($path)) {
+        abort(404, 'Agente no encontrado.');
+    }
+    return response()->download($path, 'navier-agent.exe');
+});
+
 // Rutas protegidas (Requieren autenticación)
 Route::middleware(['auth', 'check.tenant.status'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -30,6 +39,7 @@ Route::middleware(['auth', 'check.tenant.status'])->group(function () {
     Route::get('/agentes', [AgenteController::class, 'index'])->name('agentes.index');
 
     // Panel exclusivo de super admin
+
     Route::middleware(['super_admin'])->group(function () {
         Route::resource('tenants', TenantController::class)->except(['show', 'destroy']);
     });
