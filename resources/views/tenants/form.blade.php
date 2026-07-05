@@ -28,18 +28,27 @@
                             <h5 class="font-14 text-muted border-bottom pb-2">Información Comercial y Facturación</h5>
                         </div>
 
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold" for="plan_type">Plan Contratado *</label>
-                            <select class="form-select @error('plan_type') is-invalid @enderror" id="plan_type" name="plan_type" required>
-                                <option value="Demo" {{ (old('plan_type', $tenant->plan_type ?? '') === 'Demo') ? 'selected' : '' }}>Demo</option>
-                                <option value="Mensual" {{ (old('plan_type', $tenant->plan_type ?? '') === 'Mensual') ? 'selected' : '' }}>Mensual</option>
-                                <option value="Anual" {{ (old('plan_type', $tenant->plan_type ?? '') === 'Anual') ? 'selected' : '' }}>Anual</option>
-                                <option value="Lifetime" {{ (old('plan_type', $tenant->plan_type ?? '') === 'Lifetime') ? 'selected' : '' }}>Lifetime</option>
-                            </select>
-                            @error('plan_type') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Plan Contratado *</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @php $currentPlan = old('plan_type', $tenant->plan_type ?? ''); @endphp
+                                
+                                <input type="radio" class="btn-check" name="plan_type" id="plan_demo" value="Demo" autocomplete="off" {{ $currentPlan === 'Demo' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-warning" for="plan_demo">Demo</label>
+
+                                <input type="radio" class="btn-check" name="plan_type" id="plan_mensual" value="Mensual" autocomplete="off" {{ $currentPlan === 'Mensual' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-info" for="plan_mensual">Mensual</label>
+
+                                <input type="radio" class="btn-check" name="plan_type" id="plan_anual" value="Anual" autocomplete="off" {{ $currentPlan === 'Anual' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-primary" for="plan_anual">Anual</label>
+
+                                <input type="radio" class="btn-check" name="plan_type" id="plan_lifetime" value="Lifetime" autocomplete="off" {{ $currentPlan === 'Lifetime' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-success" for="plan_lifetime">Lifetime</label>
+                            </div>
+                            @error('plan_type') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label fw-bold" for="billing_status">Estado de Facturación *</label>
                             <select class="form-select @error('billing_status') is-invalid @enderror" id="billing_status" name="billing_status" required>
                                 <option value="Al día" {{ (old('billing_status', $tenant->billing_status ?? 'Al día') === 'Al día') ? 'selected' : '' }}>Al día</option>
@@ -48,9 +57,9 @@
                             @error('billing_status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold" for="demo_expires_at">Vencimiento Demo (Opcional)</label>
-                            <input class="form-control @error('demo_expires_at') is-invalid @enderror" id="demo_expires_at" name="demo_expires_at" type="date" value="{{ old('demo_expires_at', isset($tenant) && $tenant->demo_expires_at ? $tenant->demo_expires_at->format('Y-m-d') : '') }}">
+                        <div class="col-md-6" id="demo_expires_container" style="display: none;">
+                            <label class="form-label fw-bold text-warning" for="demo_expires_at"><i class="ri-timer-line"></i> Vencimiento del Demo</label>
+                            <input class="form-control border-warning @error('demo_expires_at') is-invalid @enderror" id="demo_expires_at" name="demo_expires_at" type="date" value="{{ old('demo_expires_at', isset($tenant) && $tenant->demo_expires_at ? $tenant->demo_expires_at->format('Y-m-d') : '') }}">
                             @error('demo_expires_at') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
@@ -101,3 +110,28 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const planRadios = document.querySelectorAll('input[name="plan_type"]');
+        const demoContainer = document.getElementById('demo_expires_container');
+        
+        function toggleDemoField() {
+            const selected = document.querySelector('input[name="plan_type"]:checked');
+            if (selected && selected.value === 'Demo') {
+                demoContainer.style.display = 'block';
+            } else {
+                demoContainer.style.display = 'none';
+            }
+        }
+        
+        planRadios.forEach(radio => {
+            radio.addEventListener('change', toggleDemoField);
+        });
+        
+        // Initial check
+        toggleDemoField();
+    });
+</script>
+@endpush

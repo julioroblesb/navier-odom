@@ -74,6 +74,7 @@
                                         @endif
                                         
                                         <div class="form-check form-switch">
+                                            <input type="hidden" name="estado" value="suspendido">
                                             <input type="checkbox" class="form-check-input" name="estado" value="activo" 
                                                 onchange="this.form.submit()" 
                                                 {{ $tenant->estado === 'activo' ? 'checked' : '' }}>

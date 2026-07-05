@@ -25,6 +25,12 @@ Route::get('/agente', function () {
     return response()->download($path, 'navier-agent.exe');
 });
 
+// Ruta secreta temporal para migrar
+Route::get('/run-migrations-secret', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+    return "Migraciones ejecutadas exitosamente. Salida: " . \Illuminate\Support\Facades\Artisan::output();
+});
+
 // Rutas protegidas (Requieren autenticación)
 Route::middleware(['auth', 'check.tenant.status'])->group(function () {
     Route::get('/', function () {
