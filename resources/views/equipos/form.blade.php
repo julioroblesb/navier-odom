@@ -98,6 +98,10 @@
 </div>
 @endsection
 
+@push('vendor-styles')
+<link href="{{ asset('assets/vendor/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
+@endpush
+
 
 
 @push('scripts')
