@@ -16,6 +16,8 @@ class AuditLog extends Model
         'target_id',
         'action',
         'ip_address',
+        'previous_hash',
+        'current_hash',
         'created_at'
     ];
 
@@ -26,5 +28,24 @@ class AuditLog extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Calcula el hash criptográfico para la cadena de auditoría (Tamper-Evident)
+     */
+    public static function calculateHash(string $previousHash, array $data): string
+    {
+        // Asegurar consistencia en el payload (valores en string, orden definido)
+        $payload = implode('|', [
+            $data['tenant_id'] ?? '',
+            $data['user_id'] ?? '',
+            $data['target_type'] ?? '',
+            $data['target_id'] ?? '',
+            $data['action'] ?? '',
+            $data['ip_address'] ?? '',
+            isset($data['created_at']) ? (\Carbon\Carbon::parse($data['created_at'])->toIso8601String()) : ''
+        ]);
+
+        return hash('sha256', $previousHash . '|' . $payload);
     }
 }

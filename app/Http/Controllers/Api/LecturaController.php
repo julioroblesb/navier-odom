@@ -16,22 +16,48 @@ class LecturaController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validate token
-        $token = $request->header('X-Agent-Token') ?? $request->input('token');
+        $serial = $request->input('serial');
+        $signature = $request->input('signature');
+        $timestamp = $request->input('timestamp');
+        $data = $request->input('data', []);
 
-        if (!$token) {
-            return response()->json(['error' => 'Token requerido'], 401);
+        if (!$serial || !$signature || !$timestamp) {
+            return response()->json(['error' => 'Parámetros de seguridad HMAC incompletos (serial, signature, timestamp)'], 400);
         }
 
-        $equipo = TokenService::validateToken($token);
-
-        if (!$equipo) {
-            return response()->json(['error' => 'Token inválido o equipo inactivo'], 401);
+        // 1. Validar ventana de tiempo (prevenir replay attacks)
+        $requestTime = (int) $timestamp;
+        $currentTime = time();
+        if (abs($currentTime - $requestTime) > 300) { // ±5 minutes
+            return response()->json(['error' => 'Timestamp fuera de la ventana permitida (±5 min)'], 401);
         }
 
-        // El token ya fue validado arriba.
-        // Hostinger Firewall (ModSecurity) bloquea las cabeceras personalizadas X-Timestamp y X-Signature,
-        // por lo que eliminamos la validación HMAC. Para este caso de uso, el Token es seguridad suficiente.
+        // 2. Prevenir Replay usando Cache Atómico
+        // Cache::add() solo devuelve true si la llave no existía.
+        if (!\Illuminate\Support\Facades\Cache::add('hmac_replay_' . $signature, true, 300)) {
+            return response()->json(['error' => 'Ataque de Replay detectado'], 401);
+        }
+
+        // 3. Obtener el equipo por serial
+        $equipo = \App\Models\Equipo::where('serial', $serial)->where('activo', true)->first();
+
+        if (!$equipo || !$equipo->agente_token) {
+            return response()->json(['error' => 'Equipo no encontrado o inactivo'], 401);
+        }
+
+        // 4. Calcular el HMAC localmente
+        // El payload a firmar será el JSON de "data" sin espacios + timestamp
+        // Ejemplo: json_encode($data) . $timestamp
+        // Aseguramos un orden consistente ordenando las llaves del array
+        ksort($data);
+        $payloadToSign = json_encode($data) . $timestamp;
+        $secretKey = $equipo->agente_token;
+
+        $expectedSignature = hash_hmac('sha256', $payloadToSign, $secretKey);
+
+        if (!hash_equals($expectedSignature, $signature)) {
+            return response()->json(['error' => 'Firma HMAC inválida'], 401);
+        }
 
         // 2. Validate incoming data
         $validated = $request->validate([

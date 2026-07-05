@@ -28,6 +28,18 @@ class LogAuditAction implements ShouldQueue
      */
     public function handle(): void
     {
-        \App\Models\AuditLog::create($this->data);
+        \Illuminate\Support\Facades\DB::transaction(function () {
+            // Obtener el último registro y bloquear la fila para prevenir race conditions
+            $lastLog = \App\Models\AuditLog::lockForUpdate()->latest('id')->first();
+            
+            $previousHash = $lastLog ? ($lastLog->current_hash ?? str_repeat('0', 64)) : str_repeat('0', 64);
+            
+            $currentHash = \App\Models\AuditLog::calculateHash($previousHash, $this->data);
+            
+            $this->data['previous_hash'] = $previousHash;
+            $this->data['current_hash'] = $currentHash;
+
+            \App\Models\AuditLog::create($this->data);
+        });
     }
 }
