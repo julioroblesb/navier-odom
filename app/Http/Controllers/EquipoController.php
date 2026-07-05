@@ -11,20 +11,20 @@ class EquipoController extends Controller
 {
     public function index()
     {
-        $equipos = Equipo::with(['cliente', 'ultimaLectura'])->latest()->get();
+        $equipos = Equipo::with(['cliente', 'sucursal', 'ultimaLectura'])->latest()->get();
         return view('equipos.index', compact('equipos'));
     }
 
     public function create()
     {
-        $clientes = Cliente::where('activo', true)->orderBy('razon_social')->get();
+        $clientes = Cliente::with('sucursales')->where('activo', true)->orderBy('razon_social')->get();
         return view('equipos.form', ['equipo' => new Equipo(), 'clientes' => $clientes]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'cliente_id' => 'nullable|exists:clientes,id',
+            'sucursal_id' => 'required|exists:sucursales,id',
             'serial' => 'required|string|max:30|unique:equipos,serial',
             'modelo' => 'required|string|max:100',
             'ip_local' => 'nullable|string|max:15',
@@ -33,6 +33,7 @@ class EquipoController extends Controller
         ]);
 
         $validated['activo'] = $request->has('activo');
+        $validated['cliente_id'] = \App\Models\Sucursal::find($validated['sucursal_id'])->cliente_id;
         // Generate a unique token for this new equipment
         $validated['agente_token'] = TokenService::generateToken($validated['serial']);
 
@@ -42,7 +43,7 @@ class EquipoController extends Controller
 
     public function show(Equipo $equipo)
     {
-        $equipo->load(['cliente', 'alertas' => function($q) {
+        $equipo->load(['cliente', 'sucursal', 'alertas' => function($q) {
             $q->where('resuelta', false);
         }]);
         $lecturas = $equipo->lecturas()->latest()->take(30)->get();
@@ -62,14 +63,14 @@ class EquipoController extends Controller
 
     public function edit(Equipo $equipo)
     {
-        $clientes = Cliente::where('activo', true)->orderBy('razon_social')->get();
+        $clientes = Cliente::with('sucursales')->where('activo', true)->orderBy('razon_social')->get();
         return view('equipos.form', compact('equipo', 'clientes'));
     }
 
     public function update(Request $request, Equipo $equipo)
     {
         $validated = $request->validate([
-            'cliente_id' => 'nullable|exists:clientes,id',
+            'sucursal_id' => 'required|exists:sucursales,id',
             'serial' => 'required|string|max:30|unique:equipos,serial,'.$equipo->id,
             'modelo' => 'required|string|max:100',
             'ip_local' => 'nullable|string|max:15',
@@ -78,6 +79,7 @@ class EquipoController extends Controller
         ]);
 
         $validated['activo'] = $request->has('activo');
+        $validated['cliente_id'] = \App\Models\Sucursal::find($validated['sucursal_id'])->cliente_id;
 
         $equipo->update($validated);
         return redirect()->route('equipos.index')->with('success', 'Equipo actualizado correctamente.');

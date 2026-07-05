@@ -42,8 +42,14 @@
             <div class="card-body">
                 <ul class="list-unstyled mb-0">
                     <li class="mb-3">
-                        <small class="text-muted d-block">Cliente Asignado</small>
-                        @if($equipo->cliente)
+                        <small class="text-muted d-block">Cliente / Sucursal Asignada</small>
+                        @if($equipo->sucursal)
+                            <a href="{{ route('clientes.show', $equipo->sucursal->cliente) }}" class="text-body fw-bold">
+                                {{ $equipo->sucursal->cliente->razon_social }}
+                            </a>
+                            <br>
+                            <small class="text-muted"><i class="ri-store-2-line"></i> {{ $equipo->sucursal->nombre }} ({{ $equipo->sucursal->direccion ?? 'Sin dir.' }})</small>
+                        @elseif($equipo->cliente)
                             <a href="{{ route('clientes.edit', $equipo->cliente) }}" class="text-body fw-bold">
                                 {{ $equipo->cliente->razon_social }}
                             </a>

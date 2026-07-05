@@ -21,6 +21,7 @@ Route::middleware(['auth', 'check.tenant.status'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('clientes', ClienteController::class);
+    Route::resource('sucursales', \App\Http\Controllers\SucursalController::class)->except(['index', 'create', 'show', 'edit']);
     Route::resource('equipos', EquipoController::class);
 
     Route::get('/lecturas', [LecturaWebController::class, 'index'])->name('lecturas.index');

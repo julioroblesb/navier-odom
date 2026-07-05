@@ -56,9 +56,8 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('clientes.edit', $cliente) }}" class="action-icon text-success" title="Editar">
-                                        <i class="ri-edit-box-line"></i>
-                                    </a>
+                                    <a href="{{ route('clientes.show', $cliente) }}" class="btn btn-sm btn-info" title="Ver y Administrar Sucursales"><i class="ri-eye-line"></i></a>
+                                    <a href="{{ route('clientes.edit', $cliente) }}" class="btn btn-sm btn-primary" title="Editar Cliente"><i class="ri-edit-2-line"></i></a>
                                     <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar este cliente?');">
                                         @csrf
                                         @method('DELETE')

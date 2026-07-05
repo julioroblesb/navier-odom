@@ -16,6 +16,7 @@ class Equipo extends Model
     protected $fillable = [
         'tenant_id',
         'cliente_id',
+        'sucursal_id',
         'serial',
         'modelo',
         'ip_local',
@@ -34,11 +35,19 @@ class Equipo extends Model
     ];
 
     /**
-     * Cliente propietario del equipo.
+     * Cliente propietario del equipo (directo).
      */
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class);
+    }
+
+    /**
+     * Sucursal física del equipo.
+     */
+    public function sucursal(): BelongsTo
+    {
+        return $this->belongsTo(Sucursal::class);
     }
 
     /**

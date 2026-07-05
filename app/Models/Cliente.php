@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Cliente extends Model
 {
@@ -28,11 +29,19 @@ class Cliente extends Model
     ];
 
     /**
-     * Equipos asignados al cliente.
+     * Sucursales del cliente.
      */
-    public function equipos(): HasMany
+    public function sucursales(): HasMany
     {
-        return $this->hasMany(Equipo::class);
+        return $this->hasMany(Sucursal::class);
+    }
+
+    /**
+     * Equipos asignados al cliente (a través de sucursales).
+     */
+    public function equipos(): HasManyThrough
+    {
+        return $this->hasManyThrough(Equipo::class, Sucursal::class);
     }
 
     /**

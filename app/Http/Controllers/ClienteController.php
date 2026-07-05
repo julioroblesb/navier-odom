@@ -20,8 +20,8 @@ class ClienteController extends Controller
 
     public function show(Cliente $cliente)
     {
-        // Redirigir a edit ya que no hay vista show dedicada
-        return redirect()->route('clientes.edit', $cliente);
+        $cliente->load('sucursales.equipos');
+        return view('clientes.show', compact('cliente'));
     }
 
     public function store(Request $request)

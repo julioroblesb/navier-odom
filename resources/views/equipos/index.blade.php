@@ -20,7 +20,7 @@
                         <thead>
                             <tr>
                                 <th>Serial / Modelo</th>
-                                <th>Cliente Asignado</th>
+                                <th>Cliente / Sucursal</th>
                                 <th>IP Local</th>
                                 <th>Última Lectura</th>
                                 <th>Estado</th>
@@ -37,9 +37,15 @@
                                     <br><small class="text-muted">{{ $equipo->modelo }}</small>
                                 </td>
                                 <td>
-                                    @if($equipo->cliente)
-                                        <a href="{{ route('clientes.edit', $equipo->cliente) }}" class="text-body">
-                                            {{ Str::limit($equipo->cliente->razon_social, 35) }}
+                                    @if($equipo->sucursal)
+                                        <a href="{{ route('clientes.show', $equipo->sucursal->cliente) }}" class="text-body fw-bold">
+                                            {{ Str::limit($equipo->sucursal->cliente->razon_social, 30) }}
+                                        </a>
+                                        <br>
+                                        <small class="text-muted"><i class="ri-store-2-line"></i> {{ $equipo->sucursal->nombre }}</small>
+                                    @elseif($equipo->cliente)
+                                        <a href="{{ route('clientes.edit', $equipo->cliente) }}" class="text-body fw-bold">
+                                            {{ Str::limit($equipo->cliente->razon_social, 30) }}
                                         </a>
                                     @else
                                         <span class="text-muted fst-italic">Sin asignar</span>

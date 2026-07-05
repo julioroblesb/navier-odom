@@ -34,16 +34,22 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label class="form-label fw-bold">Cliente Asignado</label>
-                            <select name="cliente_id" class="form-select @error('cliente_id') is-invalid @enderror">
-                                <option value="">-- Sin asignar (En almacén) --</option>
+                            <label class="form-label fw-bold">Cliente / Sucursal Asignada *</label>
+                            <select name="sucursal_id" class="form-select @error('sucursal_id') is-invalid @enderror" required>
+                                <option value="">-- Seleccionar --</option>
                                 @foreach($clientes as $cliente)
-                                    <option value="{{ $cliente->id }}" {{ old('cliente_id', $equipo->cliente_id) == $cliente->id ? 'selected' : '' }}>
-                                        {{ $cliente->razon_social }}
-                                    </option>
+                                    @if($cliente->sucursales->count() > 0)
+                                        <optgroup label="{{ $cliente->razon_social }}">
+                                            @foreach($cliente->sucursales as $sucursal)
+                                                <option value="{{ $sucursal->id }}" {{ old('sucursal_id', $equipo->sucursal_id) == $sucursal->id ? 'selected' : '' }}>
+                                                    {{ $sucursal->nombre }} ({{ $sucursal->direccion ?? 'Sin dir.' }})
+                                                </option>
+                                            @endforeach
+                                        </optgroup>
+                                    @endif
                                 @endforeach
                             </select>
-                            @error('cliente_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            @error('sucursal_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-6">
