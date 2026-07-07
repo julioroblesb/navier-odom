@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Equipo extends Model
 {
+    use \Illuminate\Database\Eloquent\SoftDeletes;
     use \App\Models\Concerns\BelongsToTenant;
 
     protected $table = 'equipos';

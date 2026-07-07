@@ -17,9 +17,9 @@
                     </div>
                     <div>
                         <h5 class="fw-bold mb-1">Descarga el Agente</h5>
-                        <p class="text-muted mb-2">Este instalador `navier-agent-V10.exe` es el mismo para todas las fotocopiadoras. Descárgalo y envíaselo por WhatsApp a tu cliente.</p>
-                        <a href="{{ asset('downloads/navier-agent-V10.exe') }}" download="navier-agent-V10.exe" class="btn btn-sm btn-outline-primary fw-bold">
-                            <i class="ri-download-line me-1"></i> Descargar navier-agent-V10.exe
+                        <p class="text-muted mb-2">Este instalador `navier-agent.exe` es el mismo para todas las fotocopiadoras. Descárgalo y envíaselo por WhatsApp a tu cliente.</p>
+                        <a href="{{ url('/agente') }}" download="navier-agent.exe" class="btn btn-sm btn-outline-primary fw-bold">
+                            <i class="ri-download-line me-1"></i> Descargar navier-agent.exe
                         </a>
                     </div>
                 </div>

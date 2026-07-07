@@ -87,11 +87,15 @@ class EquipoController extends Controller
 
     public function destroy(Equipo $equipo)
     {
-        if ($equipo->lecturas()->count() > 0) {
-            return back()->with('error', 'No se puede eliminar el equipo porque ya tiene lecturas registradas. Puede desactivarlo en su lugar.');
-        }
-        $equipo->delete();
-        return redirect()->route('equipos.index')->with('success', 'Equipo eliminado correctamente.');
+        // Liberar el número de serie para que otro tenant pueda registrarlo
+        // Conservamos el registro original (Soft Delete) para no perder el historial de lecturas
+        $oldSerial = $equipo->serial;
+        $equipo->serial = $oldSerial . '_LIBERADO_' . time();
+        $equipo->save();
+
+        $equipo->delete(); // Soft Delete
+
+        return redirect()->route('equipos.index')->with('success', 'Equipo eliminado y número de serie liberado correctamente.');
     }
 
     /**
