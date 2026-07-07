@@ -339,6 +339,7 @@ $(document).ready(function() {
         chart.render();
     });
 </script>
+@endif
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
